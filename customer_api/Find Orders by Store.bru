@@ -1,0 +1,54 @@
+meta {
+  name: Find Orders by Store
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/api/stores/{{store_api_key}}/orders?api_key={{api_key}}&api_timestamp={{api_timestamp}}&api_signature={{api_signature}}&status={{order_status}}
+  body: none
+  auth: none
+}
+
+query {
+  api_key: {{api_key}}
+  api_timestamp: {{api_timestamp}}
+  api_signature: {{api_signature}}
+  status: {{order_status}}
+}
+
+vars:pre-request {
+  order_status: ready_for_shipment
+}
+
+script:pre-request {
+  // calculate timestamp
+  const timestamp = parseInt(Date.now() / 1000);
+  console.log("timestamp: " + timestamp);
+  bru.setEnvVar("api_timestamp", timestamp);
+  
+  // Set your API key and API secret as Bruno environment variables, your key and secret are available at https://app.shippingeasy.com/settings/api_credentials
+  const apiKey = bru.getEnvVar("api_key");
+  const apiSecret = bru.getEnvVar("api_secret");
+  const storeApiKey = bru.getEnvVar("store_api_key");
+  const orderStatus = bru.getVar("order_status");
+  
+  // build signature string - https://shippingeasy.readme.io/docs/authentication-signing-requests#how-to-calculate-a-signature
+  const signatureString = req.getMethod() + "&" +
+    "/api/stores/" + storeApiKey + "/orders&" +
+    "api_key=" + apiKey + "&" +
+    "api_timestamp=" + timestamp + "&" +
+    "status=" + orderStatus;
+  
+  console.log("signature string: " + signatureString);
+  
+  // generate signature
+  const CryptoJS = require("crypto-js");
+  const apiSignature = CryptoJS.HmacSHA256(signatureString, apiSecret).toString(CryptoJS.enc.Hex);
+  console.log("api request signature: " + apiSignature);
+  bru.setEnvVar("api_signature", apiSignature); 
+}
+
+docs {
+  https://shippingeasy.readme.io/reference/storesstore_api_keyorders
+}

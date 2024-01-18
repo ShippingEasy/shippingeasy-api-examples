@@ -1,0 +1,130 @@
+meta {
+  name: Create Order
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{url}}/api/stores/{{store_api_key}}/orders?api_key={{api_key}}&api_timestamp={{api_timestamp}}&api_signature={{api_signature}}
+  body: json
+  auth: none
+}
+
+query {
+  api_key: {{api_key}}
+  api_timestamp: {{api_timestamp}}
+  api_signature: {{api_signature}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "order": {
+      "external_order_identifier": "{{external_order_id}}",
+      "ordered_at": "{{ordered_at}}",
+      "order_status": "awaiting_shipment",
+      "billing_company": "AcmeInc.",
+      "billing_first_name": "Fred",
+      "billing_last_name": "Jones",
+      "billing_address": "1234Street",
+      "billing_address2": "Suite100",
+      "billing_city": "Austin",
+      "billing_state": "TX",
+      "billing_postal_code": "78701",
+      "billing_country": "USA",
+      "billing_phone_number": "512-123-1234",
+      "billing_email": "billing@example.com",
+      "recipients": [
+        {
+          "first_name": "Jack",
+          "last_name": "Ship",
+          "company": "ShippingEasy",
+          "email": "jack@example.com",
+          "phone_number": "855-202-2275",
+          "residential": "true",
+          "address": "34301 Bull Creek Rd",
+          "address2": "",
+          "province": "",
+          "state": "TX",
+          "city": "Austin",
+          "postal_code": "78731",
+          "postal_code_plus_4": "1234",
+          "country": "UnitedStates",
+          "shipping_method": "Ground",
+          "base_cost": "10.00",
+          "cost_excluding_tax": "10.00",
+          "cost_tax": "0.00",
+          "base_handling_cost": "0.00",
+          "handling_cost_excluding_tax": "0.00",
+          "handling_cost_including_tax": "0.00",
+          "handling_cost_tax": "0.00",
+          "shipping_zone_id": "123",
+          "shipping_zone_name": "XYZ",
+          "items_total": "1",
+          "items_shipped": "0",
+          "line_items": [
+            {
+              "item_name": "PencilHolder",
+              "sku": "9876543",
+              "bin_picking_number": "7",
+              "unit_price": "1.30",
+              "total_excluding_tax": "1.30",
+              "weight_in_ounces": "10",
+              "product_options": {
+                "pa_size": "large",
+                "Colour": "Blue"
+              },
+              "quantity": "1"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
+vars:pre-request {
+  external_order_id: 1234568
+  ordered_at: 2023-12-13
+}
+
+script:pre-request {
+  // calculate timestamp
+  const timestamp = parseInt(Date.now() / 1000);
+  console.log("timestamp: " + timestamp);
+  bru.setEnvVar("api_timestamp", timestamp);
+
+  // Set your API key and API secret as Bruno environment variables, your key and secret are available at https://app.shippingeasy.com/settings/api_credentials
+  const apiKey = bru.getEnvVar("api_key");
+  const apiSecret = bru.getEnvVar("api_secret");
+  const storeApiKey = bru.getEnvVar("store_api_key");
+  const orderedAt = bru.getVar("ordered_at");
+  const externalOrderId = bru.getVar("external_order_id");
+
+  // build signature string - https://shippingeasy.readme.io/docs/authentication-signing-requests#how-to-calculate-a-signature
+
+  // interpolate variables
+  let stringBody = JSON.stringify(req.getBody());
+  stringBody = stringBody.replace("{{ordered_at}}", orderedAt);
+  stringBody = stringBody.replace("{{external_order_id}}", externalOrderId);
+
+  const signatureString = req.getMethod() + "&" +
+    "/api/stores/" + storeApiKey + "/orders&" +
+    "api_key=" + apiKey + "&" +
+    "api_timestamp=" + timestamp + "&" + stringBody;
+
+  console.log("signature string: " + signatureString);
+
+  // generate signature
+  const CryptoJS = require("crypto-js");
+  const apiSignature = CryptoJS.HmacSHA256(signatureString, apiSecret).toString(CryptoJS.enc.Hex);
+  console.log("api request signature: " + apiSignature);
+  bru.setEnvVar("api_signature", apiSignature);
+}
+
+docs {
+  https://shippingeasy.readme.io/reference/apiorders
+}

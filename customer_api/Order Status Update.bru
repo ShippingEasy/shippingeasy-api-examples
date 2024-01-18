@@ -1,0 +1,71 @@
+meta {
+  name: Order Status Update
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{url}}/api/stores/{{store_api_key}}/orders/{{external_order_id}}/status?api_key={{api_key}}&api_timestamp={{api_timestamp}}&api_signature={{api_signature}}
+  body: json
+  auth: none
+}
+
+query {
+  api_key: {{api_key}}
+  api_timestamp: {{api_timestamp}}
+  api_signature: {{api_signature}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "order": {
+      "order_status": "{{new_order_status}}"
+    }
+  }
+}
+
+vars:pre-request {
+  new_order_status: awaiting_payment
+  external_order_id: M-120723-004
+}
+
+script:pre-request {
+  // calculate timestamp
+  const timestamp = parseInt(Date.now() / 1000);
+  console.log("timestamp: " + timestamp);
+  bru.setEnvVar("api_timestamp", timestamp);
+
+  // Set your API key and API secret as Bruno environment variables, your key and secret are available at https://app.shippingeasy.com/settings/api_credentials
+  const apiKey = bru.getEnvVar("api_key");
+  const apiSecret = bru.getEnvVar("api_secret");
+  const storeApiKey = bru.getEnvVar("store_api_key");
+  const externalOrderId = bru.getVar("external_order_id");
+  const newOrderStatus = bru.getVar("new_order_status");
+
+  // build signature string - https://shippingeasy.readme.io/docs/authentication-signing-requests#how-to-calculate-a-signature
+
+  // interpolate variables in body
+  let stringBody = JSON.stringify(req.getBody());
+  stringBody = stringBody.replace("{{new_order_status}}", newOrderStatus);
+
+  const signatureString = req.getMethod() + "&" +
+    "/api/stores/" + storeApiKey + "/orders/" + externalOrderId + "/status&" +
+    "api_key=" + apiKey + "&" +
+    "api_timestamp=" + timestamp + "&" + stringBody;
+
+  console.log("signature string: " + signatureString);
+
+  // generate signature
+  const CryptoJS = require("crypto-js");
+  const apiSignature = CryptoJS.HmacSHA256(signatureString, apiSecret).toString(CryptoJS.enc.Hex);
+  console.log("api request signature: " + apiSignature);
+  bru.setEnvVar("api_signature", apiSignature);
+}
+
+docs {
+  https://shippingeasy.readme.io/reference/storesstore_api_keyordersexternal_order_identifier
+}
