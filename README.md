@@ -6,7 +6,7 @@ This repository contains example API calls for the ShippingEasy APIs. The exampl
 
 1. Clone This Repository
 
-1. Install Bruno Desktop Client from https://www.usebruno.com/.
+1. Install Bruno Desktop Client from https://www.usebruno.com/
 
 1. Open the Collection in Bruno
 
@@ -28,15 +28,13 @@ This repository contains example API calls for the ShippingEasy APIs. The exampl
 
 1. Enter your API Credentials
 
-   Select the `configure` option from the Environment drop down in the upper right.
+   Select the `Configure` option from the Environment drop down in the upper right.
 
    ![Configure Environment Screen](readme_images/configure-env.png)
 
-   This will open the Environments modal. In the modal enter your api_key and api_secret in the Value column. These values for your account can be found in the ShippingEasy UI under [Settings > Account Settings > API Credentials](https://app.shippingeasy.com/settings/api_credentials).
+   This will open the Environments modal. In the modal, enter your `api_key` and `api_secret` in the Value column. These values for your account can be found in the ShippingEasy UI under [Settings > Account Settings > API Credentials](https://app.shippingeasy.com/settings/api_credentials).
 
    ![Configure Environment Screen](readme_images/config-env-screen.png)
-
-   You will need to select an environment from the drop down in the upper right of the Bruno UI and configure the environment with your missing secrets such as api_secret, api_key, and optional store_api_key from the [ShippingEasy UI](https://app.shippingeasy.com/settings/api_credentials)
 
 1. Run the API call by clicking on the arrow in the upper right.
 
