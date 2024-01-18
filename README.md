@@ -1,6 +1,7 @@
 # ShippingEasy Bruno API Examples
 
-This repository contains example API calls for the ShippingEasy APIs. The examples are written as Bruno API files. [Bruno](https://www.usebruno.com/) is an open source API client similar to [Postman](https://getpostman.com) or [Insomnia](https://insomnia.rest/).
+This repository contains example API calls for the [ShippingEasy APIs](https://shippingeasy.readme.io/reference/getting-started). The examples are written as Bruno API files. [Bruno](https://www.usebruno.com/) is an open source API client similar to [Postman](https://getpostman.com) or [Insomnia](https://insomnia.rest/).
+
 
 ## To Use:
 
@@ -22,21 +23,21 @@ This repository contains example API calls for the ShippingEasy APIs. The exampl
 
 1. Select the Customer Credentials environment
 
-   Select the `Customer Credentials`` option from the Environments menu in the upper right.
+   Select the `Customer Credentials` option from the Environments menu in the upper right.
 
    ![Customer Credentials Environment](readme_images/customer-credentials.png)
 
 1. Enter your API Credentials
 
-   Select the `Configure` option from the Environment drop down in the upper right.
+   Select the `Configure` option from the `Environment` drop down in the upper right
 
    ![Configure Environment Screen](readme_images/configure-env.png)
 
-   This will open the Environments modal. In the modal, enter your `api_key` and `api_secret` in the Value column. These values for your account can be found in the ShippingEasy UI under [Settings > Account Settings > API Credentials](https://app.shippingeasy.com/settings/api_credentials).
+   This will open the `Environments` modal. In the modal, enter your `api_key` and `api_secret` in the Value column. These values for your account can be found in the ShippingEasy UI under [Settings > Account Settings > API Credentials](https://app.shippingeasy.com/settings/api_credentials).
 
    ![Configure Environment Screen](readme_images/config-env-screen.png)
 
-1. Run the API call by clicking on the arrow in the upper right.
+1. Run the API call by clicking on the arrow in the upper right
 
    ![Run Arrow](readme_images/run-arrow.png)
 
@@ -46,7 +47,7 @@ This repository contains example API calls for the ShippingEasy APIs. The exampl
 
 ## Authentication Signature Calculation
 
-In addition to the API key, the ShippingEasy API requires an authentication signature. Calculation of that signature is described in the [documentation here](https://shippingeasy.readme.io/reference/authentication-signing-requests). This Bruno collection also provides a Javascript implementation of this signature calculation. You can view the Javascript implementation by clicking on the `Script` tab in Bruno.
+In addition to the API key, the ShippingEasy API requires an authentication signature. Calculation of that signature is described in the [documentation here](https://shippingeasy.readme.io/reference/authentication-signing-requests). This Bruno collection provides a Javascript implementation of this signature calculation. You can view the Javascript implementation by clicking on the `Script` tab in Bruno.
 
 ![Signature Calculation](readme_images/signature-calculation.png)
 
@@ -60,5 +61,6 @@ The ShippingEasy Customer API is designed around the use case of sending orders 
 
 If you are looking for a more full featured API for shipping and logistics, we encourage you to look at another Auctane brand, [ShipEngine](https://www.shipengine.com/)
 
+## API Documentation
 
-API doc is available here: [ShippingEasy Customer API Doc](https://shippingeasy.readme.io/reference/getting-started)
+API documentation is available here: [ShippingEasy Customer API Doc](https://shippingeasy.readme.io/reference/getting-started)
